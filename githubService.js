@@ -3,7 +3,9 @@ import https from "https";
 class GithubService {
   constructor() {}
 
-  getUserGithubEvents(username) {
+  async getUserGithubEvents(username) {
+    if (username.trim().length == 0) throw new Error("Invalid username");
+
     const apiUrl = `https://api.github.com/users/${username}/events`;
 
     const options = {
@@ -12,32 +14,47 @@ class GithubService {
       },
     };
 
-    this.fetchData(apiUrl, options)
+    await this.fetchData(apiUrl, options)
       .then((events) => {
-        events.forEach((event) => {
-          switch (event.type) {
-            case "PushEvent":
-              break;
-            case "DeleteEvent":
-              break;
-            case "CreateEvent":
-              break;
+        var groupedEventsByRepoName = this.groupBy(
+          events,
+          (event) => event.repo.name
+        );
 
-            default:
-              break;
+        Object.entries(groupedEventsByRepoName).forEach(
+          ([repoName, events]) => {
+            var groupedEventsByType = this.groupBy(
+              events,
+              (event) => event.type
+            );
+
+            Object.entries(groupedEventsByType).forEach(([type, items]) => {
+              switch (type) {
+                case "PushEvent":
+                  console.log(
+                    `- Pushed ${items.length} commits to ${repoName}`
+                  );
+                  break;
+                case "DeleteEvent":
+                  console.log(`- Delete branch or tag on ${repoName}`);
+                  break;
+                case "CreateEvent":
+                  console.log(`- New branch or tag create on ${repoName}`);
+                  break;
+                default:
+                  console.log(`- Event with type ${type} not supported`);
+                  break;
+              }
+            });
           }
-          console.log(
-            `ID: ${task.id}, Description: ${task.description}, Status: ${task.status}, CreatedAt: ${task.createdAt}, UpdatedAt: ${task.updatedAt}`
-          );
-        });
-        console.log(data);
+        );
       })
       .catch((error) => {
         console.error(error);
       });
   }
 
-  fetchData(apiUrl, options) {
+  async fetchData(apiUrl, options) {
     return new Promise((resolve, reject) => {
       https
         .get(apiUrl, options, (response) => {
@@ -59,6 +76,14 @@ class GithubService {
           reject(`Request failed: ${error.message}`);
         });
     });
+  }
+
+  groupBy(array, keyFn) {
+    return array.reduce((result, current) => {
+      const key = keyFn(current);
+      (result[key] = result[key] || []).push(current);
+      return result;
+    }, {});
   }
 }
 

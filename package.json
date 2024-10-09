@@ -4,7 +4,7 @@
   "description": "",
   "main": "githubActivityCli.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./githubActivityCli.js"
   },
   "repository": {
     "type": "git",

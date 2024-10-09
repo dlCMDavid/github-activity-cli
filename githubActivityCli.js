@@ -12,10 +12,14 @@ const rl = readline.createInterface({
 console.log("Github activity");
 rl.prompt();
 
-rl.on("line", (line) => {
+rl.on("line", async (line) => {
   const [username] = line.trim().split(" ");
 
-  githubService.getUserGithubEvents(username);
+  try {
+    await githubService.getUserGithubEvents(username);
+  } catch (error) {
+    console.error(error.message);
+  }
 
   rl.prompt();
 }).on("close", () => {
