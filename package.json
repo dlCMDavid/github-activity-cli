@@ -1,0 +1,21 @@
+{
+  "name": "githubuseractivity",
+  "version": "1.0.0",
+  "description": "",
+  "main": "githubActivityCli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dlCMDavid/github-activity-cli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dlCMDavid/github-activity-cli/issues"
+  },
+  "homepage": "https://github.com/dlCMDavid/github-activity-cli#readme",
+  "type": "module"
+}
